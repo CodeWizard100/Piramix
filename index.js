@@ -236,6 +236,31 @@ app.post('/setdatafield', async (req, res) => {
     }
 });
 
+// Get fields from a save
+app.post('/getsavefields', async (req, res) => {
+    const { saveName, username, appid } = req.body;
+
+    try {
+        // Fetch the save fields from Firebase
+        const response = await axios.get(`${process.env.link}/Apps/${appid}/Users/${username}/Saves/${saveName}.json`);
+
+        // Check if data exists for the save
+        if (!response.data || Object.keys(response.data).length === 0) {
+            return res.status(400).json({ message: 'Save not found or has no fields!' });
+        }
+
+        // Return the save fields as JSON
+        return res.status(200).json({
+            message: 'Save fields retrieved successfully!',
+            saveFields: response.data
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error retrieving save fields!' });
+    }
+});
+
+
 // Create a new save
 app.post('/newsave', async (req, res) => {
     const { saveName, username, appid } = req.body;
