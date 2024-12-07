@@ -32,7 +32,7 @@ app.post('/getaccount', async (req, res) => {
   } catch (error) {
     // Handle errors
     console.error(error);
-    return res.status(500).json({ message: 'Error while getting account' });
+    return res.status(500).json({ message: `${process.env.link}/Apps/${appid}/Users/${username}.json not found!` });
   }
 });
 
