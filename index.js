@@ -126,6 +126,192 @@ app.post('/iscorrectpassword', async (req, res) => {
     }
 });
 
+// Add achievement to a user
+app.post('/addachievement', async (req, res) => {
+    const { user, key, achievementName, appid } = req.body;
+
+    try {
+        if (key !== process.env.KEY) {
+            return res.status(403).json({ message: 'Invalid environment key!' });
+        }
+
+        const achievementData = {
+            [achievementName]: true
+        };
+
+        await axios.put(`${process.env.link}/Apps/${appid}/Users/${user}/Achievements/${achievementName}.json`, achievementData);
+
+        return res.status(200).json({ message: 'Achievement added successfully!' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error adding achievement!' });
+    }
+});
+
+// Check if the user owns a specific achievement
+app.post('/ownsachievement', async (req, res) => {
+    const { user, achievementName, appid } = req.body;
+
+    try {
+        const response = await axios.get(`${process.env.link}/Apps/${appid}/Users/${user}/Achievements/${achievementName}.json`);
+
+        if (response.data === true) {
+            return res.status(200).json({ message: 'User owns this achievement!' });
+        } else {
+            return res.status(400).json({ message: 'User does not own this achievement!' });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error checking achievement ownership!' });
+    }
+});
+
+// Get user data
+app.post('/getdata', async (req, res) => {
+    const { username, appid } = req.body;
+
+    try {
+        const response = await axios.get(`${process.env.link}/Apps/${appid}/Users/${username}/data.json`);
+
+        if (!response.data) {
+            return res.status(400).json({ message: 'Data not found!' });
+        }
+
+        return res.status(200).json({
+            message: 'Data retrieved successfully!',
+            jsoncontent: response.data
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error retrieving data!' });
+    }
+});
+
+// Add data field to user data
+app.post('/adddatafield', async (req, res) => {
+    const { username, key, fieldName, fieldValue, appid } = req.body;
+
+    try {
+        if (key !== process.env.KEY) {
+            return res.status(403).json({ message: 'Invalid environment key!' });
+        }
+
+        const newField = {
+            [fieldName]: fieldValue
+        };
+
+        await axios.patch(`${process.env.link}/Apps/${appid}/Users/${username}/data.json`, newField);
+
+        return res.status(200).json({ message: 'Data field added successfully!' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error adding data field!' });
+    }
+});
+
+// Set data field for user
+app.post('/setdatafield', async (req, res) => {
+    const { username, key, fieldName, fieldValue, appid } = req.body;
+
+    try {
+        if (key !== process.env.KEY) {
+            return res.status(403).json({ message: 'Invalid environment key!' });
+        }
+
+        const newField = {
+            [fieldName]: fieldValue
+        };
+
+        await axios.put(`${process.env.link}/Apps/${appid}/Users/${username}/data.json`, newField);
+
+        return res.status(200).json({ message: 'Data field set successfully!' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error setting data field!' });
+    }
+});
+
+// Create a new save
+app.post('/newsave', async (req, res) => {
+    const { saveName, username, appid } = req.body;
+
+    try {
+        const newSave = {};
+
+        await axios.put(`${process.env.link}/Apps/${appid}/Users/${username}/Saves/${saveName}.json`, newSave);
+
+        return res.status(200).json({ message: 'Save created successfully!' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error creating save!' });
+    }
+});
+
+// Add field to save
+app.post('/addsavefield', async (req, res) => {
+    const { saveName, username, fieldName, fieldValue, key, appid } = req.body;
+
+    try {
+        if (key !== process.env.KEY) {
+            return res.status(403).json({ message: 'Invalid environment key!' });
+        }
+
+        const newField = {
+            [fieldName]: fieldValue
+        };
+
+        await axios.patch(`${process.env.link}/Apps/${appid}/Users/${username}/Saves/${saveName}.json`, newField);
+
+        return res.status(200).json({ message: 'Save field added successfully!' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error adding save field!' });
+    }
+});
+
+// Set save field
+app.post('/setsavefield', async (req, res) => {
+    const { saveName, username, fieldName, fieldValue, key, appid } = req.body;
+
+    try {
+        if (key !== process.env.KEY) {
+            return res.status(403).json({ message: 'Invalid environment key!' });
+        }
+
+        const newField = {
+            [fieldName]: fieldValue
+        };
+
+        await axios.put(`${process.env.link}/Apps/${appid}/Users/${username}/Saves/${saveName}.json`, newField);
+
+        return res.status(200).json({ message: 'Save field set successfully!' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error setting save field!' });
+    }
+});
+
+// Check if the save exists
+app.post('/doeshassave', async (req, res) => {
+    const { saveName, username, appid } = req.body;
+
+    try {
+        const response = await axios.get(`${process.env.link}/Apps/${appid}/Users/${username}/Saves/${saveName}.json`);
+
+        if (response.data) {
+            return res.status(200).json({ message: 'Save exists!' });
+        } else {
+            return res.status(400).json({ message: 'Save does not exist!' });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error checking save!' });
+    }
+});
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
