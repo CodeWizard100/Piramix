@@ -4,7 +4,7 @@ const port = 80; // HTTP usually runs on port 80
 
 // Handle GET requests to the root URL
 app.get('/', (req, res) => {
-  res.send('Yo!'); // Respond with "Yo!"
+  res.send(`${process.env.link}`); // Correct use of template literal
 });
 
 // Start the server
