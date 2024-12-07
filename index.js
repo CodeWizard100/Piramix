@@ -131,6 +131,7 @@ app.post('/addachievement', async (req, res) => {
     const { user, key, achievementName, appid } = req.body;
 
     try {
+        // Use process.env.KEY instead of hardcoded key for validation
         if (key !== process.env.KEY) {
             return res.status(403).json({ message: 'Invalid environment key!' });
         }
@@ -194,6 +195,7 @@ app.post('/adddatafield', async (req, res) => {
     const { username, key, fieldName, fieldValue, appid } = req.body;
 
     try {
+        // Use process.env.KEY instead of hardcoded key for validation
         if (key !== process.env.KEY) {
             return res.status(403).json({ message: 'Invalid environment key!' });
         }
@@ -216,6 +218,7 @@ app.post('/setdatafield', async (req, res) => {
     const { username, key, fieldName, fieldValue, appid } = req.body;
 
     try {
+        // Use process.env.KEY instead of hardcoded key for validation
         if (key !== process.env.KEY) {
             return res.status(403).json({ message: 'Invalid environment key!' });
         }
@@ -254,6 +257,7 @@ app.post('/addsavefield', async (req, res) => {
     const { saveName, username, fieldName, fieldValue, key, appid } = req.body;
 
     try {
+        // Use process.env.KEY instead of hardcoded key for validation
         if (key !== process.env.KEY) {
             return res.status(403).json({ message: 'Invalid environment key!' });
         }
@@ -276,6 +280,7 @@ app.post('/setsavefield', async (req, res) => {
     const { saveName, username, fieldName, fieldValue, key, appid } = req.body;
 
     try {
+        // Use process.env.KEY instead of hardcoded key for validation
         if (key !== process.env.KEY) {
             return res.status(403).json({ message: 'Invalid environment key!' });
         }
@@ -293,26 +298,7 @@ app.post('/setsavefield', async (req, res) => {
     }
 });
 
-// Check if the save exists
-app.post('/doeshassave', async (req, res) => {
-    const { saveName, username, appid } = req.body;
-
-    try {
-        const response = await axios.get(`${process.env.link}/Apps/${appid}/Users/${username}/Saves/${saveName}.json`);
-
-        if (response.data) {
-            return res.status(200).json({ message: 'Save exists!' });
-        } else {
-            return res.status(400).json({ message: 'Save does not exist!' });
-        }
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Error checking save!' });
-    }
-});
-
 // Start the server
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server running on port ${port}`);
 });
