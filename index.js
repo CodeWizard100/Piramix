@@ -154,7 +154,7 @@ app.post('/ownsachievement', async (req, res) => {
     const { user, achievementName, appid } = req.body;
 
     try {
-        const response = await axios.get(`${process.env.link}/Apps/${appid}/Users/${user}/Achievements/${achievementName}.json`);
+        const response = await axios.get(`${process.env.link}/Apps/${appid}/Users/${user}/Achievements/${achievementName}/${achievementName}.json`);
 
         if (response.data === true) {
             return res.status(200).json({ message: 'User owns this achievement!' });
