@@ -111,15 +111,15 @@ app.post('/getallaccounts', async (req, res) => {
         }
 
         // Sanitize user data by removing sensitive information
-        const sanitizedData = Object.entries(response.data).map(([username, userData]) => {
-            const { password, iv, ...userDataWithoutSensitiveInfo } = userData;
-            return { username, ...userDataWithoutSensitiveInfo };
+        const sanitizedUsernames = Object.entries(response.data).map(([username, userData]) => {
+            // Simply return the username
+            return username;
         });
 
-        // Send the sanitized account data
+        // Send the sanitized usernames as a table (array of strings)
         return res.status(200).json({
             message: 'All accounts retrieved successfully!',
-            accounts: sanitizedData
+            usernames: sanitizedUsernames
         });
 
     } catch (error) {
