@@ -162,8 +162,10 @@ app.post('/addachievement', async (req, res) => {
     const { user, key, achievementName, appid } = req.body;
 
     try {
-        // Use process.env.KEY instead of hardcoded key for validation
-        if (key !== process.env.KEY) {
+        // Dynamically construct the expected environment variable name
+        const expectedKey = process.env[`KEY-${appid}`];
+
+        if (!expectedKey || key !== expectedKey) {
             return res.status(403).json({ message: 'Invalid environment key!' });
         }
 
@@ -177,6 +179,54 @@ app.post('/addachievement', async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error adding achievement!' });
+    }
+});
+
+app.post('/adddatafield', async (req, res) => {
+    const { username, key, fieldName, fieldValue, appid } = req.body;
+
+    try {
+        // Dynamically construct the expected environment variable name
+        const expectedKey = process.env[`KEY-${appid}`];
+
+        if (!expectedKey || key !== expectedKey) {
+            return res.status(403).json({ message: 'Invalid environment key!' });
+        }
+
+        const newField = {
+            [fieldName]: fieldValue
+        };
+
+        await axios.patch(`${process.env.link}/Apps/${appid}/Users/${username}/data.json`, newField);
+
+        return res.status(200).json({ message: 'Data field added successfully!' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error adding data field!' });
+    }
+});
+
+app.post('/setdatafield', async (req, res) => {
+    const { username, key, fieldName, fieldValue, appid } = req.body;
+
+    try {
+        // Dynamically construct the expected environment variable name
+        const expectedKey = process.env[`KEY-${appid}`];
+
+        if (!expectedKey || key !== expectedKey) {
+            return res.status(403).json({ message: 'Invalid environment key!' });
+        }
+
+        const newField = {
+            [fieldName]: fieldValue
+        };
+
+        await axios.put(`${process.env.link}/Apps/${appid}/Users/${username}/data.json`, newField);
+
+        return res.status(200).json({ message: 'Data field set successfully!' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error setting data field!' });
     }
 });
 
@@ -221,51 +271,7 @@ app.post('/getdata', async (req, res) => {
     }
 });
 
-// Add data field to user data
-app.post('/adddatafield', async (req, res) => {
-    const { username, key, fieldName, fieldValue, appid } = req.body;
 
-    try {
-        // Use process.env.KEY instead of hardcoded key for validation
-        if (key !== process.env.KEY) {
-            return res.status(403).json({ message: 'Invalid environment key!' });
-        }
-
-        const newField = {
-            [fieldName]: fieldValue
-        };
-
-        await axios.patch(`${process.env.link}/Apps/${appid}/Users/${username}/data.json`, newField);
-
-        return res.status(200).json({ message: 'Data field added successfully!' });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Error adding data field!' });
-    }
-});
-
-// Set data field for user
-app.post('/setdatafield', async (req, res) => {
-    const { username, key, fieldName, fieldValue, appid } = req.body;
-
-    try {
-        // Use process.env.KEY instead of hardcoded key for validation
-        if (key !== process.env.KEY) {
-            return res.status(403).json({ message: 'Invalid environment key!' });
-        }
-
-        const newField = {
-            [fieldName]: fieldValue
-        };
-
-        await axios.put(`${process.env.link}/Apps/${appid}/Users/${username}/data.json`, newField);
-
-        return res.status(200).json({ message: 'Data field set successfully!' });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Error setting data field!' });
-    }
-});
 
 // Get fields from a save
 app.post('/getsavefields', async (req, res) => {
