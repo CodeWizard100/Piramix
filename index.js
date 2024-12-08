@@ -163,7 +163,7 @@ app.post('/addachievement', async (req, res) => {
 
     try {
         // Dynamically construct the expected environment variable name
-        const expectedKey = process.env[`KEY-${appid}`];
+        const expectedKey = process.env.KEY
 
         if (!expectedKey || key !== expectedKey) {
             return res.status(403).json({ message: `${key} should be: ${expectedKey} key: KEY-${appid} ${process.env}` });
