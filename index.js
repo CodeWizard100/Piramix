@@ -35,7 +35,7 @@ app.use(bodyParser.json()); // Parse JSON bodies
 
 // Handle GET requests to the root URL
 app.get('/', (req, res) => {
-    res.send(`${process.env.link}`); // Correct use of template literal
+    res.send('Only POSTs are allowed'); // Correct use of template literal
 });
 
 // Handle new account creation with encryption for the password
