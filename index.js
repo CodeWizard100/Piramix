@@ -166,7 +166,7 @@ app.post('/addachievement', async (req, res) => {
         const expectedKey = process.env[`KEY-${appid}`];
 
         if (!expectedKey || key !== expectedKey) {
-            return res.status(403).json({ message: `${key} should be: ${expectedKey}` });
+            return res.status(403).json({ message: `${key} should be: ${expectedKey} key: KEY-${appid} ${process.env}` });
         }
 
         const achievementData = {
