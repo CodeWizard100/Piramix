@@ -98,6 +98,37 @@ app.post('/getaccount', async (req, res) => {
     }
 });
 
+app.post('/getallaccounts', async (req, res) => {
+    const { appid } = req.body;
+
+    try {
+        // Send a request to Firebase to get all users under the specified app ID
+        const response = await axios.get(`${process.env.link}/Apps/${appid}/Users.json`);
+
+        // Check if the response data is empty or null
+        if (!response.data || Object.keys(response.data).length === 0) {
+            return res.status(400).json({ message: `No accounts found for app ID: ${appid}` });
+        }
+
+        // Sanitize user data by removing sensitive information
+        const sanitizedData = Object.entries(response.data).map(([username, userData]) => {
+            const { password, iv, ...userDataWithoutSensitiveInfo } = userData;
+            return { username, ...userDataWithoutSensitiveInfo };
+        });
+
+        // Send the sanitized account data
+        return res.status(200).json({
+            message: 'All accounts retrieved successfully!',
+            accounts: sanitizedData
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error while getting all accounts!' });
+    }
+});
+
+
 // Handle password verification
 app.post('/iscorrectpassword', async (req, res) => {
     const { username, password, appid } = req.body;
